@@ -7,10 +7,9 @@ ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
 
 ThisBuild / scalafmtOnCompile := true
 
-//libraryDependencies ++= Seq(
-//  "com.lihaoyi"   %% "fastparse" % "2.1.3",
-//  "org.scalatest" %% "scalatest" % "3.1.0" % Test
-//)
+ThisBuild / libraryDependencies ++= Seq(
+  "org.scalatest" %% "scalatest" % "3.1.0" % Test
+)
 
 ThisBuild / scalacOptions ++= Seq(
   "-encoding",
@@ -34,8 +33,10 @@ lazy val `www-metadata` = (project in file("."))
 
 lazy val `www-metadata-core` = (project in file("core"))
 
-lazy val `www-metadata-parsers` = (project in file("parsers")).settings(
-  libraryDependencies ++= Seq(
-    "org.jsoup" % "jsoup" % "1.12.1"
+lazy val `www-metadata-parsers` = (project in file("parsers"))
+  .settings(
+    libraryDependencies := libraryDependencies.value ++ Seq(
+      "org.jsoup" % "jsoup" % "1.12.1"
+    )
   )
-)
+  .dependsOn(`www-metadata-core`)
