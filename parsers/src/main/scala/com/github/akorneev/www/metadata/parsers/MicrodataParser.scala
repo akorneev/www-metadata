@@ -45,10 +45,10 @@ object MicrodataParser {
 
   private def getItemPropElems(item: Element, doc: Document): (List[Element], List[Error]) = {
     @tailrec def loop(
-        memory: List[Element] = Nil,
-        pending: List[Element] = Nil,
-        results: List[Element] = Nil,
-        metadataErrors: List[Error] = Nil
+        memory: List[Element],
+        pending: List[Element],
+        results: List[Element],
+        metadataErrors: List[Error]
     ): (List[Element], List[Error]) = pending match {
       case Nil => (sortInTreeOrder(results), metadataErrors.reverse)
       case current :: rest =>
@@ -59,20 +59,17 @@ object MicrodataParser {
           loop(current :: memory, newPending ++ rest, newResults ++ results, metadataErrors)
         }
     }
-    val (refs, errors) = if (item.hasAttr("itemref")) {
-      @tailrec def loop(ids: List[String], elems: List[Element], errors: List[Error]): (List[Element], List[Error]) = ids match {
-        case Nil => (elems, errors)
-        case id :: rest =>
-          Option(doc getElementById id) match {
-            case Some(elem) => loop(rest, elem :: elems, errors)
-            case None       => loop(rest, elems, IdNotFound(id) :: errors)
-          }
-      }
-      val ids = splitOnSpaces(item.attr("itemref"))
-      loop(ids, elems = Nil, errors = Nil)
-    } else (Nil, Nil)
-    val children = item.children().asScala.toList
-    loop(memory = List(item), pending = refs ++ children, metadataErrors = errors)
+    @tailrec def refsLoop(ids: List[String], elems: List[Element], errors: List[Error]): (List[Element], List[Error]) = ids match {
+      case Nil => (elems, errors)
+      case id :: rest =>
+        Option(doc getElementById id) match {
+          case Some(elem) => refsLoop(rest, elem :: elems, errors)
+          case None       => refsLoop(rest, elems, IdNotFound(id) :: errors)
+        }
+    }
+    val (refs, errors) = if (item.hasAttr("itemref")) refsLoop(splitOnSpaces(item attr "itemref"), Nil, Nil) else (Nil, Nil)
+    val children       = item.children().asScala.toList
+    loop(memory = List(item), pending = refs ++ children, results = Nil, metadataErrors = errors)
   }
 
   private def getProps(elem: Element, vocabId: Option[VocabId]): Set[Property] = {
