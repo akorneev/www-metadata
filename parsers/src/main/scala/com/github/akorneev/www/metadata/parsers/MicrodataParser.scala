@@ -31,13 +31,14 @@ object MicrodataParser {
     val items = for (itemScope <- topLevelItemScopes) yield {
       val vocabId             = getVocabId(itemScope)
       val (propElems, errors) = getItemPropElems(itemScope, doc)
-      val x = propElems flatMap { elem =>
+      val propList = propElems flatMap { elem =>
         val props = getProps(elem, vocabId)
-        ???
+        val value = getValue(elem)
+        props map (p => (p, value)) groupBy (_._1) map { case (p, vs) => (p, vs.map(_._2).toList) }
       }
-      ???
+      Item(types = Nil, ids = Set.empty, vocabId = vocabId, props = propList.toMap)
     }
-    ???
+    items.toSet
   }
 
   private def getItemPropElems(item: Element, doc: Document): (List[Element], List[Error]) = {
@@ -123,7 +124,18 @@ object MicrodataParser {
 
   private def getItem(elem: Element): Item = ???
 
-  private def sortInTreeOrder(elems: Seq[Element]): List[Element] = ???
+  private def sortInTreeOrder(elems: Seq[Element]): List[Element] = {
+    import Ordering.Implicits._
+    def parents(e: Element): List[Element] = e.parents().asScala.toList.reverse
+    implicit def ord: Ordering[Element] = Ordering.fromLessThan {
+      case (e1, e2) if e1 == e2 => false
+      case (e1, e2) if e1.parent() == e2.parent() =>
+        val children = e1.parent().children()
+        children.indexOf(e1) < children.indexOf(e2)
+      case (e1, e2) => implicitly[Ordering[List[Element]]].lt(parents(e1), parents(e2))
+    }
+    elems.sortBy(parents).toList
+  }
 
   private def splitOnSpaces(s: String): List[String] = s.split("[\\u0020\\u0009\\u000A\\u000C\\u000D]+").filterNot(_.isEmpty).toList
 
