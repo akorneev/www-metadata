@@ -19,9 +19,12 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
         withFile("microdata/001.html") { html =>
           val items = MicrodataParser.parse(html)
           items should equal(
-            Set(
-              Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
-              Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Daniel"))))
+            (
+              Set(
+                Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
+                Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Daniel"))))
+              ),
+              Nil
             )
           )
         }
@@ -30,9 +33,12 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
         withFile("microdata/002.html") { html =>
           val items = MicrodataParser.parse(html)
           items should equal(
-            Set(
-              Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
-              Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Daniel"))))
+            (
+              Set(
+                Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
+                Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Daniel"))))
+              ),
+              Nil
             )
           )
         }

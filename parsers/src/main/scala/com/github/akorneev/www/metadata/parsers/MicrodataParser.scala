@@ -15,20 +15,22 @@ object MicrodataParser {
   case class MicrodataError(elem: Element) extends Error
   case class IdNotFound(id: String)        extends Error
 
-  def parse(html: String): Set[Item] = {
+  type ParseResult = (Set[Item], List[Error])
+
+  def parse(html: String): ParseResult = {
     val doc = Jsoup parse html
     parse(doc)
   }
 
-  def parse(html: InputStream, charsetName: Option[String] = Some("UTF-8"), baseUri: Option[String] = None): Set[Item] = {
+  def parse(html: InputStream, charsetName: Option[String] = Some("UTF-8"), baseUri: Option[String] = None): ParseResult = {
     val doc = Jsoup.parse(html, charsetName.orNull, baseUri.getOrElse(""))
     parse(doc)
   }
 
-  private def parse(doc: Document): Set[Item] = {
+  private def parse(doc: Document): ParseResult = {
     val itemScopes         = doc.select("[itemscope]").asScala.toSeq
     val topLevelItemScopes = itemScopes filterNot (_ hasAttr "itemprop")
-    val items = for (itemScope <- topLevelItemScopes) yield {
+    val items: Seq[(Item, List[Error])] = for (itemScope <- topLevelItemScopes) yield {
       val vocabId             = getVocabId(itemScope)
       val (propElems, errors) = getItemPropElems(itemScope, doc)
       val propList = propElems flatMap { elem =>
@@ -36,9 +38,9 @@ object MicrodataParser {
         val value = getValue(elem)
         props map (p => (p, value)) groupBy (_._1) map { case (p, vs) => (p, vs.map(_._2).toList) }
       }
-      Item(types = Nil, ids = Set.empty, vocabId = vocabId, props = propList.toMap)
+      (Item(types = Nil, ids = Set.empty, vocabId = vocabId, props = propList.toMap), errors)
     }
-    items.toSet
+    items.foldLeft((Set.empty[Item], List.empty[Error])) { case ((items, errors), (i, es)) => (items + i, errors ++ es) }
   }
 
   private def getItemPropElems(item: Element, doc: Document): (List[Element], List[Error]) = {
