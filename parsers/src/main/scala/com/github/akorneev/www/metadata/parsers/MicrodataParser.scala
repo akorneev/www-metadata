@@ -113,8 +113,11 @@ object MicrodataParser {
         case tok :: rest =>
           val id =
             if (tok contains '#') tok.substring(0, tok indexOf '#' + 1)
-            else if (tok contains '/') tok.substring(0, tok lastIndexOf '/' + 1)
-            else tok + "/"
+            else if (tok contains '/') {
+              val last = tok lastIndexOf '/'
+              print(s"last=$last, len=${tok.length}, tok=$tok")
+              tok.substring(0, last + 1)
+            } else tok + "/"
           loop(rest, id :: potentialValues)
       }
       val tokens = splitOnSpaces(elem attr "itemtype")

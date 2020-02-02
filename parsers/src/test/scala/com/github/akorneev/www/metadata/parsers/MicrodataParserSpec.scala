@@ -2,7 +2,7 @@ package com.github.akorneev.www.metadata.parsers
 
 import java.io.InputStream
 
-import com.github.akorneev.www.metadata.core.microdata.{Item, Property, StringValue}
+import com.github.akorneev.www.metadata.core.microdata.{Item, Property, StringValue, VocabId}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -63,6 +63,98 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Daniel"))))
+              ),
+              Nil
+            )
+          )
+        }
+      }
+      "005" in {
+        withFile("microdata/005.html") { html =>
+          val items = MicrodataParser.parse(html)
+          items should equal(
+            (
+              Set(
+                Item(
+                  Nil,
+                  Set.empty,
+                  None,
+                  Map(
+                    Property("name")        -> List(StringValue("Neil")),
+                    Property("band")        -> List(StringValue("Four Parts Water")),
+                    Property("nationality") -> List(StringValue("British"))
+                  )
+                )
+              ),
+              Nil
+            )
+          )
+        }
+      }
+      "006" in {
+        withFile("microdata/006.html") { html =>
+          val items = MicrodataParser.parse(html)
+          items should equal(
+            (
+              Set(
+                Item(Nil, Set.empty, None, Map(Property("product-id") -> List(StringValue("9678AOU879"))))
+              ),
+              Nil
+            )
+          )
+        }
+      }
+      "007" in {
+        withFile("microdata/007.html") { html =>
+          val items = MicrodataParser.parse(html)
+          items should equal(
+            (
+              Set(
+                Item(Nil, Set.empty, None, Map(Property("product-id") -> List(StringValue("9678AOU879"))))
+              ),
+              Nil
+            )
+          )
+        }
+      }
+      "008" in {
+        withFile("microdata/008.html") { html =>
+          val items = MicrodataParser.parse(html)
+          items should equal(
+            (
+              Set(
+                Item(Nil, Set.empty, None, Map(Property("product-id") -> List(StringValue("This one rocks!"))))
+              ),
+              Nil
+            )
+          )
+        }
+      }
+      "009" in {
+        withFile("microdata/009.html") { html =>
+          val items = MicrodataParser.parse(html, baseUri = Some("http://example.org/"))
+          items should equal(
+            (
+              Set(
+                Item(
+                  Nil,
+                  Set.empty,
+                  Some(VocabId("https://schema.org/")),
+                  Map(Property("https://schema.org/logo") -> List(StringValue("http://example.org/our-logo.png")))
+                )
+              ),
+              Nil
+            )
+          )
+        }
+      }
+      "010" in {
+        withFile("microdata/010.html") { html =>
+          val items = MicrodataParser.parse(html)
+          items should equal(
+            (
+              Set(
+                Item(Nil, Set.empty, Some(VocabId("https://schema.org/")), Map(Property("https://schema.org/name") -> List(StringValue("The Company"))))
               ),
               Nil
             )
