@@ -232,6 +232,31 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           )
         }
       }
+      "014" in {
+        withFile("microdata/014.html") { html =>
+          val items = MicrodataParser.parse(html)
+          items should equal(
+            (
+              Set(
+                Item(
+                  Nil,
+                  Set.empty,
+                  None,
+                  Map(
+                    Property("name") -> List(StringValue("Amanda")),
+                    Property("band") -> List(
+                      ItemValue(
+                        Item(Nil, Set.empty, None, Map(Property("name") -> List(StringValue("Jazz Band")), Property("size") -> List(StringValue("12"))))
+                      )
+                    )
+                  )
+                )
+              ),
+              Nil
+            )
+          )
+        }
+      }
     }
   }
 }
