@@ -28,18 +28,9 @@ object MicrodataParser {
   }
 
   private def parse(doc: Document): ParseResult = {
-    val itemScopes         = doc.select("[itemscope]").asScala.toSeq
-    val topLevelItemScopes = itemScopes filterNot (_ hasAttr "itemprop")
-    val items: Seq[(Item, List[Error])] = for (itemScope <- topLevelItemScopes) yield {
-      val vocabId             = getVocabId(itemScope)
-      val (propElems, errors) = getItemPropElems(itemScope, doc)
-      val propList = propElems flatMap { elem =>
-        val props = getProps(elem, vocabId)
-        val value = getValue(elem)
-        props map (p => (p, value)) groupBy (_._1) map { case (p, vs) => (p, vs.map(_._2).toList) }
-      }
-      (Item(types = Nil, ids = Set.empty, vocabId = vocabId, props = propList.toMap), errors)
-    }
+    val itemScopes                      = doc.select("[itemscope]").asScala.toSeq
+    val topLevelItemScopes              = itemScopes filterNot (_ hasAttr "itemprop")
+    val items: Seq[(Item, List[Error])] = topLevelItemScopes map getItem
     items.foldLeft((Set.empty[Item], List.empty[Error])) { case ((items, errors), (i, es)) => (items + i, errors ++ es) }
   }
 
@@ -87,11 +78,13 @@ object MicrodataParser {
     loop(tokens, props = Nil).toSet
   }
 
-  private def getValue(elem: Element): Value =
-    if (elem hasAttr "itemscope") ItemValue(getItem(elem))
-    else if (elem hasAttr "content") StringValue(elem attr "content")
-    else
-      elem.tagName() match {
+  private def getValue(elem: Element): (Value, List[Error]) =
+    if (elem hasAttr "itemscope") {
+      val (item, errors) = getItem(elem)
+      (ItemValue(item), errors)
+    } else if (elem hasAttr "content") (StringValue(elem attr "content"), Nil)
+    else {
+      val value = elem.tagName() match {
         case "audio" | "embed" | "iframe" | "img" | "source" | "track" | "video" =>
           if (elem hasAttr "src") StringValue(elem absUrl "src")
           else StringValue("")
@@ -105,6 +98,8 @@ object MicrodataParser {
         case "time" if elem hasAttr "datetime"        => StringValue(elem attr "datetime")
         case _                                        => StringValue(elem.text())
       }
+      (value, Nil)
+    }
 
   private def getVocabId(elem: Element): Option[VocabId] =
     if (elem hasAttr "itemtype") {
@@ -124,7 +119,16 @@ object MicrodataParser {
       loop(tokens, Nil)
     } else None
 
-  private def getItem(elem: Element): Item = ???
+  private def getItem(elem: Element): (Item, List[Error]) = {
+    val vocabId             = getVocabId(elem)
+    val (propElems, errors) = getItemPropElems(elem, elem.ownerDocument())
+    val propList = propElems flatMap { elem =>
+      val props = getProps(elem, vocabId)
+      val value = getValue(elem)
+      props map (p => (p, value._1)) groupBy (_._1) map { case (p, vs) => (p, vs.map(_._2).toList, value._2) }
+    }
+    (Item(types = Nil, ids = Set.empty, vocabId = vocabId, props = propList.map(p => (p._1, p._2)).toMap), errors ++ propList.flatMap(_._3))
+  }
 
   private def sortInTreeOrder(elems: Seq[Element]): List[Element] = {
     import Ordering.Implicits._

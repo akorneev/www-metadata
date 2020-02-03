@@ -2,7 +2,7 @@ package com.github.akorneev.www.metadata.parsers
 
 import java.io.InputStream
 
-import com.github.akorneev.www.metadata.core.microdata.{Item, Property, StringValue, VocabId}
+import com.github.akorneev.www.metadata.core.microdata.{Item, ItemValue, Property, StringValue, VocabId}
 import org.scalatest.freespec.AnyFreeSpec
 import org.scalatest.matchers.should.Matchers
 
@@ -155,6 +155,39 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(Nil, Set.empty, Some(VocabId("https://schema.org/")), Map(Property("https://schema.org/name") -> List(StringValue("The Company"))))
+              ),
+              Nil
+            )
+          )
+        }
+      }
+      "011" in {
+        withFile("microdata/011.html") { html =>
+          val items = MicrodataParser.parse(html, baseUri = Some("http://example.org/"))
+          items should equal(
+            (
+              Set(
+                Item(
+                  Nil,
+                  Set.empty,
+                  Some(VocabId("https://schema.org/")),
+                  Map(
+                    Property("https://schema.org/name") -> List(StringValue("Panasonic White 60L Refrigerator")),
+                    Property("https://schema.org/aggregateRating") -> List(
+                      ItemValue(
+                        Item(
+                          Nil,
+                          Set.empty,
+                          Some(VocabId("https://schema.org/")),
+                          Map(
+                            Property("https://schema.org/ratingValue") -> List(StringValue("3.5")),
+                            Property("https://schema.org/reviewCount") -> List(StringValue("11"))
+                          )
+                        )
+                      )
+                    )
+                  )
+                )
               ),
               Nil
             )
