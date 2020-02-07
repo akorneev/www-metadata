@@ -126,7 +126,7 @@ object MicrodataParser {
       val value = getValue(elem)
       props map (p => (p, value._1)) groupBy (_._1) map { case (p, vs) => (p, vs.map(_._2).toList, value._2) }
     }
-    val props       = propList.foldLeft(Map.empty[Property, List[Value]]) { case (acc, (p, vs, _)) => acc.updatedWith(p)(v => Some(vs ::: v.getOrElse(Nil))) }
+    val props       = propList.foldLeft(Map.empty[Property, List[Value]]) { case (acc, (p, vs, _)) => acc.updated(p, vs ::: acc.getOrElse(p, Nil)) }
     val valueErrors = propList.flatMap(_._3)
     (
       Item(
