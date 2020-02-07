@@ -119,14 +119,24 @@ object MicrodataParser {
     } else None
 
   private def getItem(elem: Element): (Item, List[Error]) = {
-    val vocabId             = getVocabId(elem)
-    val (propElems, errors) = getItemPropElems(elem, elem.ownerDocument())
-    val propList = propElems flatMap { elem =>
+    val vocabId                 = getVocabId(elem)
+    val (propElems, elemErrors) = getItemPropElems(elem, elem.ownerDocument())
+    val propList: Seq[(Property, List[Value], List[Error])] = propElems flatMap { elem =>
       val props = getProps(elem, vocabId)
       val value = getValue(elem)
       props map (p => (p, value._1)) groupBy (_._1) map { case (p, vs) => (p, vs.map(_._2).toList, value._2) }
     }
-    (Item(types = Nil, ids = Set.empty, vocabId = vocabId, props = propList.map(p => (p._1, p._2)).toMap), errors ++ propList.flatMap(_._3))
+    val props       = propList.foldLeft(Map.empty[Property, List[Value]]) { case (acc, (p, vs, _)) => acc.updatedWith(p)(v => Some(vs ::: v.getOrElse(Nil))) }
+    val valueErrors = propList.flatMap(_._3)
+    (
+      Item(
+        types = Nil,
+        ids = Set.empty,
+        vocabId = vocabId,
+        props = props
+      ),
+      elemErrors ++ valueErrors
+    )
   }
 
   private def sortInTreeOrder(elems: Seq[Element]): List[Element] = {

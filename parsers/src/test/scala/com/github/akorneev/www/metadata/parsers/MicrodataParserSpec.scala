@@ -257,6 +257,20 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           )
         }
       }
+      "015" in {
+        withFile("microdata/015.html") { html =>
+          val items = MicrodataParser.parse(html)
+          items should equal(
+            (
+              Set(
+                Item(Nil, Set.empty, None, Map(Property("flavor") -> List(StringValue("Lemon sorbet"), StringValue("Apricot sorbet"))))
+              ),
+              Nil
+            )
+          )
+        }
+      }
+
     }
   }
 }
