@@ -107,7 +107,7 @@ object MicrodataParser {
         case Nil => potentialValues.reverse.headOption map VocabId
         case tok :: rest =>
           val id =
-            if (tok contains '#') tok.substring(0, tok indexOf '#' + 1)
+            if (tok contains '#') tok.substring(0, (tok indexOf '#') + 1)
             else if (tok contains '/') {
               val last = tok lastIndexOf '/'
               tok.substring(0, last + 1)
