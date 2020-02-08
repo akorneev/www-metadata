@@ -101,6 +101,10 @@ object MicrodataParser {
       (value, Nil)
     }
 
+  private def getItemId(elem: Element): Option[URI] =
+    if (elem hasAttr "itemid") Some(new URI(elem attr "itemid"))
+    else None
+
   private def getVocabId(elem: Element): Option[VocabId] =
     if (elem hasAttr "itemtype") {
       @tailrec def loop(tokens: List[String], potentialValues: List[String]): Option[VocabId] = tokens match {
@@ -119,6 +123,7 @@ object MicrodataParser {
     } else None
 
   private def getItem(elem: Element): (Item, List[Error]) = {
+    val itemId                  = getItemId(elem)
     val vocabId                 = getVocabId(elem)
     val (propElems, elemErrors) = getItemPropElems(elem, elem.ownerDocument())
     val propList: Seq[(Property, List[Value], List[Error])] = propElems flatMap { elem =>
@@ -131,7 +136,7 @@ object MicrodataParser {
     (
       Item(
         types = Nil,
-        ids = Set.empty,
+        id = itemId,
         vocabId = vocabId,
         props = props
       ),
