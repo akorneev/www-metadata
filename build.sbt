@@ -35,6 +35,11 @@ ThisBuild / libraryDependencies ++= Seq(
 )
 
 lazy val `www-metadata` = (project in file("."))
+  .settings(
+    // crossScalaVersions must be set to Nil on the aggregating project
+    crossScalaVersions := Nil,
+    publish / skip := true
+  )
   .aggregate(`www-metadata-core`, `www-metadata-parsers`)
 
 lazy val `www-metadata-core` = (project in file("core"))
