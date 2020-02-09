@@ -364,6 +364,32 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           )
         }
       }
+      "021" in {
+        withFile("microdata/021.html") { html =>
+          val items = MicrodataParser.parse(html, baseUri = Some("http://example.net/some/dataexample"))
+          items should equal(
+            (
+              Set(
+                Item(
+                  Nil,
+                  None,
+                  Some(VocabId("http://myvocab.example.org/animals/")),
+                  Map(
+                    Property("http://example.com/fn")                   -> List(StringValue("Hedral")),
+                    Property("http://myvocab.example.org/animals/name") -> List(StringValue("Hedral")),
+                    Property("http://myvocab.example.org/animals/desc") -> List(
+                      StringValue("Hedral is a male american domestic shorthair, with a fluffy black fur with white paws and belly.")
+                    ),
+                    Property("http://example.com/color")               -> List(StringValue("black"), StringValue("white")),
+                    Property("http://myvocab.example.org/animals/img") -> List(StringValue("http://example.net/some/hedral.jpeg"))
+                  )
+                )
+              ),
+              Nil
+            )
+          )
+        }
+      }
 
     }
   }
