@@ -1,7 +1,7 @@
 name := "www-metadata"
 
 ThisBuild / organization := "com.github.akorneev"
-ThisBuild / organizationName := "Alexander korneev"
+ThisBuild / organizationName := "Alexander Korneev"
 ThisBuild / organizationHomepage := Some(url("https://github.com/akorneev"))
 ThisBuild / scmInfo := Some(ScmInfo(browseUrl = url("https://github.com/akorneev/www-metadata"), connection = "scm:git@github.com:akorneev/www-metadata.git"))
 ThisBuild / developers := List(Developer(id = "akorneev", name = "Alexander Korneev", email = "akorneev@gmail.com", url = url("https://github.com/akorneev")))
@@ -61,3 +61,6 @@ lazy val `www-metadata-parsers` = (project in file("parsers"))
     )
   )
   .dependsOn(`www-metadata-core`)
+
+ThisBuild / publishTo := Some("GitHub Package Registry" at "https://maven.pkg.github.com/akorneev/www-metadata")
+ThisBuild / credentials := Seq(Credentials(Path.userHome / ".sbt" / ".github_credentials"))
