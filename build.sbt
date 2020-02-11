@@ -1,6 +1,15 @@
 name := "www-metadata"
+
 ThisBuild / organization := "com.github.akorneev"
-ThisBuild / version := "0.1-SNAPSHOT"
+ThisBuild / organizationName := "Alexander korneev"
+ThisBuild / organizationHomepage := Some(url("https://github.com/akorneev"))
+ThisBuild / scmInfo := Some(ScmInfo(browseUrl = url("https://github.com/akorneev/www-metadata"), connection = "scm:git@github.com:akorneev/www-metadata.git"))
+ThisBuild / developers := List(Developer(id = "akorneev", name = "Alexander Korneev", email = "akorneev@gmail.com", url = url("https://github.com/akorneev")))
+ThisBuild / description := "Library for working with various metadata found on the World Wide Web"
+ThisBuild / licenses := List("MIT License" -> url("https://raw.githubusercontent.com/akorneev/www-metadata/master/LICENSE"))
+ThisBuild / homepage := Some(url("https://github.com/akorneev/www-metadata"))
+
+ThisBuild / version := "0.1"
 
 ThisBuild / scalaVersion := "2.13.1"
 ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
