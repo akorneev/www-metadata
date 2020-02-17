@@ -22,12 +22,17 @@ object MicrodataParser {
     parse(doc)
   }
 
-  def parse(html: InputStream, charsetName: Option[String] = Some("UTF-8"), baseUri: Option[String] = None): ParseResult = {
-    val doc = Jsoup.parse(html, charsetName.orNull, baseUri.getOrElse(""))
+  def parse(html: String, baseUri: String): ParseResult = {
+    val doc = Jsoup.parse(html, baseUri)
     parse(doc)
   }
 
-  private def parse(doc: Document): ParseResult = {
+  def parse(html: InputStream, charsetName: Option[String] = Some("UTF-8"), baseUri: Option[String] = None): ParseResult = {
+    val doc = Jsoup.parse(html, charsetName.orNull, baseUri getOrElse "")
+    parse(doc)
+  }
+
+  def parse(doc: Document): ParseResult = {
     val itemScopes                      = doc.select("[itemscope]").asScala.toSeq
     val topLevelItemScopes              = itemScopes filterNot (_ hasAttr "itemprop")
     val items: Seq[(Item, List[Error])] = topLevelItemScopes map getItem
