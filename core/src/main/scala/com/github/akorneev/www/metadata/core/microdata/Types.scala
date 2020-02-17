@@ -11,5 +11,6 @@ case class Property(name: String)
 sealed trait Value
 case class StringValue(value: String) extends Value
 case class ItemValue(item: Item)      extends Value
+case class UriValue(value: URI)       extends Value
 
 case class Item(types: List[ItemType], id: Option[URI], vocabId: Option[VocabId], props: Map[Property, List[Value]])

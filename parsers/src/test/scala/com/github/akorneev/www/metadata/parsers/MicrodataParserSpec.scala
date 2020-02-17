@@ -141,7 +141,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
                   Nil,
                   None,
                   Some(VocabId("https://schema.org/")),
-                  Map(Property("https://schema.org/logo") -> List(StringValue("http://example.org/our-logo.png")))
+                  Map(Property("https://schema.org/logo") -> List(UriValue(new URI("http://example.org/our-logo.png"))))
                 )
               ),
               Nil
@@ -333,7 +333,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
                     Property("http://example.org/animals#desc") -> List(
                       StringValue("Hedral is a male american domestic shorthair, with a fluffy black fur with white paws and belly.")
                     ),
-                    Property("http://example.org/animals#img") -> List(StringValue("http://example.net/some/hedral.jpeg"))
+                    Property("http://example.org/animals#img") -> List(UriValue(new URI("http://example.net/some/hedral.jpeg")))
                   )
                 )
               ),
@@ -381,7 +381,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
                       StringValue("Hedral is a male american domestic shorthair, with a fluffy black fur with white paws and belly.")
                     ),
                     Property("http://example.com/color")               -> List(StringValue("black"), StringValue("white")),
-                    Property("http://myvocab.example.org/animals/img") -> List(StringValue("http://example.net/some/hedral.jpeg"))
+                    Property("http://myvocab.example.org/animals/img") -> List(UriValue(new URI("http://example.net/some/hedral.jpeg")))
                   )
                 )
               ),

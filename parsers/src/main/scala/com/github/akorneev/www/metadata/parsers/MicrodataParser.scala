@@ -86,14 +86,14 @@ object MicrodataParser {
     else {
       val value = elem.tagName() match {
         case "audio" | "embed" | "iframe" | "img" | "source" | "track" | "video" =>
-          if (elem hasAttr "src") StringValue(elem absUrl "src")
-          else StringValue("")
+          if (elem hasAttr "src") UriValue(new URI(elem absUrl "src"))
+          else UriValue(new URI(""))
         case "a" | "area" | "link" =>
-          if (elem hasAttr "href") StringValue(elem absUrl "href")
-          else StringValue("")
+          if (elem hasAttr "href") UriValue(new URI(elem absUrl "href"))
+          else UriValue(new URI(""))
         case "object" =>
-          if (elem hasAttr "data") StringValue(elem absUrl "data")
-          else StringValue("")
+          if (elem hasAttr "data") UriValue(new URI(elem absUrl "data"))
+          else UriValue(new URI(""))
         case "data" | "meter" if elem hasAttr "value" => StringValue(elem attr "value")
         case "time" if elem hasAttr "datetime"        => StringValue(elem attr "datetime")
         case _                                        => StringValue(elem.text())
