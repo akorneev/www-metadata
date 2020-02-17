@@ -105,6 +105,11 @@ object MicrodataParser {
     if (elem hasAttr "itemid") Some(new URI(elem attr "itemid"))
     else None
 
+  private def getItemTypes(elem: Element): Set[ItemType] =
+    if (elem hasAttr "itemtype") {
+      splitOnSpaces(elem attr "itemtype").map(u => ItemType(new URI(u))).toSet
+    } else Set.empty
+
   private def getVocabId(elem: Element): Option[VocabId] =
     if (elem hasAttr "itemtype") {
       @tailrec def loop(tokens: List[String], potentialValues: List[String]): Option[VocabId] = tokens match {
@@ -125,6 +130,7 @@ object MicrodataParser {
   private def getItem(elem: Element): (Item, List[Error]) = {
     val itemId                  = getItemId(elem)
     val vocabId                 = getVocabId(elem)
+    val itemTypes               = getItemTypes(elem)
     val (propElems, elemErrors) = getItemPropElems(elem, elem.ownerDocument())
     val propList: Seq[(Property, List[Value], List[Error])] = propElems flatMap { elem =>
       val props = getProps(elem, vocabId)
@@ -135,7 +141,7 @@ object MicrodataParser {
     val valueErrors = propList.flatMap(_._3)
     (
       Item(
-        types = Nil,
+        types = itemTypes,
         id = itemId,
         vocabId = vocabId,
         props = props

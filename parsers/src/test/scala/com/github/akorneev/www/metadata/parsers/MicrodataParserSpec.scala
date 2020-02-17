@@ -22,8 +22,8 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("Daniel"))))
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Daniel"))))
               ),
               Nil
             )
@@ -36,8 +36,8 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("Daniel"))))
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Elizabeth")))),
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Daniel"))))
               ),
               Nil
             )
@@ -50,7 +50,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("Elizabeth"))))
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Elizabeth"))))
               ),
               Nil
             )
@@ -63,7 +63,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("Daniel"))))
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Daniel"))))
               ),
               Nil
             )
@@ -77,7 +77,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set.empty,
                   None,
                   None,
                   Map(
@@ -98,7 +98,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("product-id") -> List(StringValue("9678AOU879"))))
+                Item(Set.empty, None, None, Map(Property("product-id") -> List(StringValue("9678AOU879"))))
               ),
               Nil
             )
@@ -111,7 +111,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("product-id") -> List(StringValue("9678AOU879"))))
+                Item(Set.empty, None, None, Map(Property("product-id") -> List(StringValue("9678AOU879"))))
               ),
               Nil
             )
@@ -124,7 +124,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("product-id") -> List(StringValue("This one rocks!"))))
+                Item(Set.empty, None, None, Map(Property("product-id") -> List(StringValue("This one rocks!"))))
               ),
               Nil
             )
@@ -138,7 +138,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set(ItemType(new URI("https://schema.org/LocalBusiness"))),
                   None,
                   Some(VocabId("https://schema.org/")),
                   Map(Property("https://schema.org/logo") -> List(UriValue(new URI("http://example.org/our-logo.png"))))
@@ -155,7 +155,12 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, Some(VocabId("https://schema.org/")), Map(Property("https://schema.org/name") -> List(StringValue("The Company"))))
+                Item(
+                  Set(ItemType(new URI("https://schema.org/LocalBusiness"))),
+                  None,
+                  Some(VocabId("https://schema.org/")),
+                  Map(Property("https://schema.org/name") -> List(StringValue("The Company")))
+                )
               ),
               Nil
             )
@@ -169,7 +174,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set(ItemType(new URI("https://schema.org/Product"))),
                   None,
                   Some(VocabId("https://schema.org/")),
                   Map(
@@ -177,7 +182,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
                     Property("https://schema.org/aggregateRating") -> List(
                       ItemValue(
                         Item(
-                          Nil,
+                          Set(ItemType(new URI("https://schema.org/AggregateRating"))),
                           None,
                           Some(VocabId("https://schema.org/")),
                           Map(
@@ -201,7 +206,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("birthday") -> List(StringValue("2009-05-10"))))
+                Item(Set.empty, None, None, Map(Property("birthday") -> List(StringValue("2009-05-10"))))
               ),
               Nil
             )
@@ -215,14 +220,14 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set.empty,
                   None,
                   None,
                   Map(
                     Property("name") -> List(StringValue("Amanda")),
                     Property("band") -> List(
                       ItemValue(
-                        Item(Nil, None, None, Map(Property("name") -> List(StringValue("Jazz Band")), Property("size") -> List(StringValue("12"))))
+                        Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Jazz Band")), Property("size") -> List(StringValue("12"))))
                       )
                     )
                   )
@@ -240,14 +245,14 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set.empty,
                   None,
                   None,
                   Map(
                     Property("name") -> List(StringValue("Amanda")),
                     Property("band") -> List(
                       ItemValue(
-                        Item(Nil, None, None, Map(Property("name") -> List(StringValue("Jazz Band")), Property("size") -> List(StringValue("12"))))
+                        Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("Jazz Band")), Property("size") -> List(StringValue("12"))))
                       )
                     )
                   )
@@ -264,7 +269,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("flavor") -> List(StringValue("Lemon sorbet"), StringValue("Apricot sorbet"))))
+                Item(Set.empty, None, None, Map(Property("flavor") -> List(StringValue("Lemon sorbet"), StringValue("Apricot sorbet"))))
               ),
               Nil
             )
@@ -278,7 +283,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set.empty,
                   None,
                   None,
                   Map(
@@ -298,7 +303,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("The Castle"))))
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("The Castle"))))
               ),
               Nil
             )
@@ -311,7 +316,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
           items should equal(
             (
               Set(
-                Item(Nil, None, None, Map(Property("name") -> List(StringValue("The Castle"))))
+                Item(Set.empty, None, None, Map(Property("name") -> List(StringValue("The Castle"))))
               ),
               Nil
             )
@@ -325,7 +330,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set(ItemType(new URI("http://example.org/animals#cat"))),
                   None,
                   Some(VocabId("http://example.org/animals#")),
                   Map(
@@ -349,7 +354,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set(ItemType(new URI("http://vocab.example.net/book"))),
                   Some(new URI("urn:isbn:0-330-34032-8")),
                   Some(VocabId("http://vocab.example.net/")),
                   Map(
@@ -371,7 +376,7 @@ class MicrodataParserSpec extends AnyFreeSpec with Matchers {
             (
               Set(
                 Item(
-                  Nil,
+                  Set(ItemType(new URI("http://myvocab.example.org/animals/cat"))),
                   None,
                   Some(VocabId("http://myvocab.example.org/animals/")),
                   Map(
