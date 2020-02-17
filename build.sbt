@@ -9,7 +9,7 @@ ThisBuild / description := "Library for working with various metadata found on t
 ThisBuild / licenses := List("MIT License" -> url("https://raw.githubusercontent.com/akorneev/www-metadata/master/LICENSE"))
 ThisBuild / homepage := Some(url("https://github.com/akorneev/www-metadata"))
 
-ThisBuild / version := "0.2"
+ThisBuild / version := "0.3"
 
 ThisBuild / scalaVersion := "2.13.1"
 ThisBuild / crossScalaVersions := Seq("2.12.10", "2.13.1")
